@@ -117,7 +117,10 @@ def collect_labels(n_instances, n_steps, problem_idx, **kwargs):
             else:
                 total_time += time_with_cut
                 time_list.append(time_with_cut)
+                print('Feature matrix of cuts in bag =', bag_features)
                 features.append(np.mean(bag_features, axis=0))
+                print('Mean feature matrix of cuts in bag =', np.array(features))
+
                 print("Training data sampled!\n")
             if j >= 5 and failed_times >= 0.8 * j:
                 print("Bad case, go to next instance!\n")
@@ -137,9 +140,9 @@ def collect_labels(n_instances, n_steps, problem_idx, **kwargs):
 
             labels = np.zeros((features_normalized.shape[0], 2))
             for j in range(features_normalized.shape[0]):
-                if time_list[j] < mean_time:
+               if time_list[j] < mean_time:
                     labels[j][0] = 1
-                else:
+               else:
                     labels[j][1] = 1
 
             if total_features.shape[0] == 0:
@@ -172,15 +175,17 @@ def main():
         "facility_location"
     ]
     problem_idx = 0
-    # save_path = os.path.join(f"./training_bags/{problem_names[problem_idx]}/")
+    #save_path = os.path.join(f"./training_bags/{problem_names[problem_idx]}/")
     save_path = os.path.join(f"./training_bags/")
 
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    n_instances = 100
-    n_steps = 100
-    cut_choice_method = "CollectLabels"   # Collect Training Data
+    n_instances = 2
+    n_steps = 2
+
+    cut_choice_method = "DCRA_KMeans"
+    # cut_choice_method = "CollectLabels"   # Collect Training Data
     #cut_choice_method = "Test"    # Evaluate
     _, _, file_path = collect_labels(n_instances, n_steps, problem_idx, cut_choice_method=cut_choice_method, save_path=save_path)
 
